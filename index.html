@@ -4,421 +4,129 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#081b2c">
-<meta name="description" content="وب‌اپلیکیشن آفلاین تشخیص اعداد فارسی و انگلیسی با رسم پیکسلی و یادگیری نمونه‌های شخصی">
+<meta name="description" content="تشخیص اعداد دست‌نویس فارسی و انگلیسی با بوم رسم نرم، پردازش تصویر و یادگیری نمونه‌های شخصی">
 <title>پیکسل‌خوان | تشخیص هوشمند اعداد</title>
 <style>
-:root{
-  --navy:#081b2c;--navy-2:#102c42;--navy-3:#183b52;--ink:#142b3b;
-  --muted:#78909f;--line:#e5edf1;--paper:#f3f7f9;--white:#fff;
-  --teal:#18c6c0;--teal-dark:#079b9a;--teal-soft:#e5fbf9;
-  --gold:#f4b84b;--red:#de6873;--shadow:0 18px 45px rgba(8,27,44,.09);
-  --radius:22px;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:Tahoma,"Segoe UI",Arial,sans-serif;line-height:1.7}
-button,textarea,select{font:inherit}
-button{cursor:pointer}
-button:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid rgba(24,198,192,.35);outline-offset:2px}
-.app-header{background:radial-gradient(circle at 15% 0%,rgba(24,198,192,.16),transparent 28%),linear-gradient(125deg,var(--navy),#123149);color:#fff;padding:28px max(18px,calc((100% - 1180px)/2)) 34px;position:relative;overflow:hidden}
-.app-header:after{content:"";position:absolute;width:300px;height:300px;border:1px solid rgba(255,255,255,.07);border-radius:50%;left:-100px;bottom:-210px;box-shadow:0 0 0 32px rgba(255,255,255,.025),0 0 0 64px rgba(255,255,255,.02)}
-.header-inner{max-width:1180px;margin:auto;position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:20px}
-.brand{display:flex;align-items:center;gap:14px}
-.brand-mark{width:52px;height:52px;border-radius:17px;background:linear-gradient(145deg,#35e0d4,#0a9eaa);display:grid;place-items:center;box-shadow:0 9px 28px rgba(24,198,192,.28)}
-.brand-mark svg{width:28px;height:28px}
-.brand h1{font-size:23px;margin:0 0 2px;font-weight:800;letter-spacing:-.4px}
-.brand p{font-size:12px;margin:0;color:#b6cbd7}
-.header-badge{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);border-radius:999px;padding:8px 14px;font-size:12px;color:#d6e8ee;white-space:nowrap;display:flex;align-items:center;gap:8px}
-.live-dot{width:7px;height:7px;border-radius:50%;background:#4be0bb;box-shadow:0 0 0 4px rgba(75,224,187,.12)}
-main{max-width:1180px;margin:-12px auto 0;padding:0 18px 46px;position:relative;z-index:2}
-.intro{padding:23px 4px 20px;display:flex;justify-content:space-between;align-items:end;gap:20px}
-.intro h2{margin:0;font-size:22px;color:var(--navy);letter-spacing:-.4px}
-.intro p{margin:5px 0 0;color:var(--muted);font-size:13px}
-.offline-note{font-size:11px;color:#138f8b;background:var(--teal-soft);border:1px solid #c8f2ed;padding:7px 11px;border-radius:999px;white-space:nowrap}
-.layout{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(340px,.92fr);gap:20px;align-items:start}
-.card{background:var(--white);border:1px solid rgba(17,55,76,.06);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
-.card-head{padding:20px 22px 15px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid #eff3f5}
-.card-title{display:flex;align-items:center;gap:11px}
-.card-icon{width:36px;height:36px;border-radius:12px;background:var(--teal-soft);color:var(--teal-dark);display:grid;place-items:center;font-size:17px;font-weight:bold}
-.card-title h3{margin:0;font-size:15px;color:var(--navy)}
-.card-title p{margin:1px 0 0;color:#91a2ac;font-size:11px}
-.count-pill{background:#f1f5f7;color:#647b89;border-radius:999px;font-size:11px;padding:5px 10px;white-space:nowrap}
-.drawing-body{padding:20px 22px 22px}
-.grid-stage{display:flex;justify-content:center;align-items:center;padding:15px 10px 18px;background:linear-gradient(145deg,#f7fbfc,#eef5f7);border:1px solid #e5eff1;border-radius:18px}
-.pixel-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px;width:min(100%,350px);aspect-ratio:7/9;touch-action:none;user-select:none;-webkit-user-select:none}
-.pixel{border:0;border-radius:7px;background:#dce7eb;box-shadow:inset 0 1px 1px rgba(255,255,255,.8),0 1px 2px rgba(18,52,70,.05);padding:0;transition:background .11s ease,transform .11s ease,box-shadow .11s ease;touch-action:none}
-.pixel.active{background:linear-gradient(145deg,#26d6cc,#079f9f);box-shadow:inset 0 1px 2px rgba(255,255,255,.28),0 3px 8px rgba(7,159,159,.18)}
-.pixel:active{transform:scale(.94)}
-.grid-hint{font-size:11px;color:#8196a2;text-align:center;margin:11px 0 0}
-.toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-top:15px}
-.tool-group{display:flex;gap:8px;flex-wrap:wrap}
-.btn{border:0;border-radius:12px;padding:10px 14px;font-weight:700;font-size:12px;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:transform .16s ease,filter .16s ease,background .16s ease;min-height:42px}
-.btn:active{transform:translateY(1px) scale(.99)}
-.btn:disabled{opacity:.48;cursor:not-allowed;filter:grayscale(.2)}
-.btn-soft{background:#f0f5f7;color:#526b79}.btn-soft:hover{background:#e8f0f3}
-.btn-primary{background:linear-gradient(135deg,#19c9c1,#079b9a);color:#fff;box-shadow:0 6px 15px rgba(8,174,169,.2)}
-.btn-primary:hover{filter:brightness(1.04)}
-.btn-dark{background:var(--navy-2);color:#fff}.btn-dark:hover{background:#1a4057}
-.btn-danger{background:#fff0f1;color:#c64d5a}.btn-danger:hover{background:#ffe5e7}
-.btn-small{min-height:34px;padding:7px 10px;border-radius:9px;font-size:11px}
-.recognize-btn{width:100%;margin-top:16px;min-height:50px;font-size:14px;border-radius:14px}
-.status-line{min-height:27px;display:flex;align-items:center;gap:8px;color:#80939e;font-size:11px;margin-top:10px}
-.status-dot{width:7px;height:7px;border-radius:50%;background:#a7b5bd;flex:none}
-.status-line.success{color:#118d84}.status-line.success .status-dot{background:#16b7a6}
-.status-line.error{color:#c64d5a}.status-line.error .status-dot{background:#de6873}
-.spinner{width:13px;height:13px;border:2px solid #d4f5f2;border-top-color:#079b9a;border-radius:50%;animation:spin .7s linear infinite;display:none}
-.status-line.loading .spinner{display:block}.status-line.loading .status-dot{display:none}
-@keyframes spin{to{transform:rotate(360deg)}}
-.results-area{padding:0 22px 21px}
-.results-top{display:flex;justify-content:space-between;align-items:center;margin:0 0 10px}
-.results-top h4{font-size:12px;margin:0;color:#506a79}
-.results-top span{font-size:10px;color:#91a2ac}
-.results-empty{padding:18px;text-align:center;background:#f7fafb;border:1px dashed #dce8ec;border-radius:14px;color:#94a5ae;font-size:11px}
-.result-feature{display:none;background:linear-gradient(115deg,#0d2a40,#17445a);color:#fff;padding:14px 16px;border-radius:15px;margin-bottom:12px;align-items:center;justify-content:space-between;gap:12px;animation:rise .35s ease}
-.result-feature.show{display:flex}
-@keyframes rise{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
-.feature-label{font-size:10px;color:#b3cbd4}.feature-digit{font-size:34px;line-height:1.2;font-weight:800;color:#4be0d4;margin-top:1px}
-.feature-meta{text-align:left}.confidence{font-size:12px;font-weight:bold}.confidence-sub{font-size:10px;color:#b4cbd4;margin-top:2px}
-.candidates{display:grid;gap:7px}
-.candidate{display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:10px;padding:8px 10px;border:1px solid #edf2f4;border-radius:12px;transition:border .15s,background .15s}
-.candidate.best{border-color:#a8e8e3;background:#f1fcfb}
-.cand-digit{width:32px;height:32px;background:#f1f5f7;border-radius:9px;display:grid;place-items:center;font-size:18px;font-weight:bold;color:#183b52}
-.candidate.best .cand-digit{background:#d9f8f4;color:#078e8b}
-.cand-info{min-width:0}.cand-name{font-size:11px;font-weight:bold;color:#395666}.cand-script{font-size:9px;color:#99a9b1;margin-top:1px}
-.score-wrap{display:flex;align-items:center;gap:8px}.score{font-size:11px;font-weight:bold;color:#506a79;min-width:34px;text-align:left}
-.mini-bar{width:55px;height:5px;background:#edf2f4;border-radius:9px;overflow:hidden}.mini-bar i{display:block;height:100%;background:linear-gradient(90deg,#31d8ca,#079b9a);border-radius:9px}
-.output-card{margin-top:20px}
-.output-body{padding:19px 22px 22px}
-.output-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:11px}
-.output-head label{font-size:12px;color:#506a79;font-weight:bold}
-.select-wrap{position:relative}.select-wrap select{appearance:none;border:1px solid #e2ebef;border-radius:10px;background:#f9fbfc;color:#496271;padding:8px 12px 8px 28px;font-size:11px;cursor:pointer}
-.select-wrap:after{content:"⌄";position:absolute;left:10px;top:2px;color:#71909c;pointer-events:none}
-#outputText{width:100%;min-height:96px;resize:vertical;border:1px solid #e4edf0;background:#fbfdfe;border-radius:14px;padding:14px 15px;color:#16364b;font-size:22px;line-height:1.8;letter-spacing:1px;direction:rtl}
-#outputText::placeholder{font-size:12px;color:#a4b2b9;letter-spacing:0}
-.output-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.output-foot{font-size:10px;color:#96a7b0;margin-top:10px}
-.training-card{margin-top:20px}
-.training-body{padding:19px 22px 21px}
-.training-intro{font-size:11px;color:#7d929e;margin:0 0 14px;line-height:1.9}
-.training-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;align-items:end}
-.field label{display:block;font-size:10px;color:#728995;margin-bottom:6px}
-.field select{width:100%;border:1px solid #e3ecef;border-radius:11px;padding:10px 12px;background:#fbfdfe;color:#284658;font-size:12px}
-.training-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:14px;padding-top:13px;border-top:1px solid #eff3f5}
-.training-count{font-size:10px;color:#8a9ca5}.training-count strong{font-size:13px;color:#098f8b}
-.footer{text-align:center;color:#9aabb4;font-size:10px;padding:23px 10px 4px}
-.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);background:#0c2a40;color:#fff;padding:11px 17px;border-radius:12px;font-size:12px;box-shadow:0 10px 30px rgba(0,0,0,.18);opacity:0;pointer-events:none;transition:all .25s;z-index:50;max-width:calc(100% - 32px);text-align:center}
-.toast.show{opacity:1;transform:translate(-50%,0)}
-@media(max-width:850px){.layout{grid-template-columns:1fr}.intro{align-items:start}.app-header{padding-top:21px;padding-bottom:28px}.drawing-body{padding-bottom:17px}.pixel-grid{width:min(100%,330px)}}
-@media(max-width:520px){.app-header{padding-left:16px;padding-right:16px}.header-inner{align-items:flex-start}.brand-mark{width:45px;height:45px;border-radius:14px}.brand h1{font-size:19px}.header-badge{font-size:10px;padding:7px 9px}.header-badge span:last-child{display:none}main{padding:0 12px 30px}.intro{padding:20px 3px 16px;display:block}.intro h2{font-size:19px}.offline-note{display:inline-block;margin-top:10px}.card{border-radius:18px}.card-head{padding:16px 16px 13px}.drawing-body,.output-body,.training-body{padding-left:15px;padding-right:15px}.results-area{padding-left:15px;padding-right:15px}.pixel-grid{gap:5px;width:min(100%,310px)}.pixel{border-radius:5px}.toolbar{align-items:stretch}.tool-group{flex:1}.tool-group .btn{flex:1}.toolbar>.btn{flex:1}.output-actions .btn{flex:1}.training-row{grid-template-columns:1fr}.training-row .btn{width:100%}.training-bottom{align-items:flex-start;flex-direction:column}.mini-bar{width:42px}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+:root{--navy:#081b2c;--navy2:#102c42;--ink:#142b3b;--muted:#78909f;--paper:#f3f7f9;--white:#fff;--teal:#18c6c0;--tealDark:#079b9a;--tealSoft:#e5fbf9;--red:#de6873;--shadow:0 18px 45px rgba(8,27,44,.09);--radius:22px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Tahoma,"Segoe UI",Arial,sans-serif;line-height:1.7}button,textarea,select,input{font:inherit}button{cursor:pointer}button:focus-visible,textarea:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid rgba(24,198,192,.35);outline-offset:2px}
+.app-header{background:radial-gradient(circle at 15% 0%,rgba(24,198,192,.16),transparent 28%),linear-gradient(125deg,var(--navy),#123149);color:#fff;padding:28px max(18px,calc((100% - 1180px)/2)) 34px;position:relative;overflow:hidden}.app-header:after{content:"";position:absolute;width:300px;height:300px;border:1px solid rgba(255,255,255,.07);border-radius:50%;left:-100px;bottom:-210px;box-shadow:0 0 0 32px rgba(255,255,255,.025),0 0 0 64px rgba(255,255,255,.02)}.header-inner{max-width:1180px;margin:auto;position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{display:flex;align-items:center;gap:14px}.brand-mark{width:52px;height:52px;border-radius:17px;background:linear-gradient(145deg,#35e0d4,#0a9eaa);display:grid;place-items:center;box-shadow:0 9px 28px rgba(24,198,192,.28)}.brand-mark svg{width:28px;height:28px}.brand h1{font-size:23px;margin:0 0 2px;font-weight:800;letter-spacing:-.4px}.brand p{font-size:12px;margin:0;color:#b6cbd7}.header-badge{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);border-radius:999px;padding:8px 14px;font-size:12px;color:#d6e8ee;white-space:nowrap;display:flex;align-items:center;gap:8px}.live-dot{width:7px;height:7px;border-radius:50%;background:#4be0bb;box-shadow:0 0 0 4px rgba(75,224,187,.12)}
+main{max-width:1180px;margin:-12px auto 0;padding:0 18px 46px;position:relative;z-index:2}.intro{padding:23px 4px 20px;display:flex;justify-content:space-between;align-items:end;gap:20px}.intro h2{margin:0;font-size:22px;color:var(--navy);letter-spacing:-.4px}.intro p{margin:5px 0 0;color:var(--muted);font-size:13px}.offline-note{font-size:11px;color:#138f8b;background:var(--tealSoft);border:1px solid #c8f2ed;padding:7px 11px;border-radius:999px;white-space:nowrap}.layout{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(340px,.92fr);gap:20px;align-items:start}.card{background:var(--white);border:1px solid rgba(17,55,76,.06);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}.card-head{padding:20px 22px 15px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid #eff3f5}.card-title{display:flex;align-items:center;gap:11px}.card-icon{width:36px;height:36px;border-radius:12px;background:var(--tealSoft);color:var(--tealDark);display:grid;place-items:center;font-size:17px;font-weight:bold}.card-title h3{margin:0;font-size:15px;color:var(--navy)}.card-title p{margin:1px 0 0;color:#91a2ac;font-size:11px}.count-pill{background:#f1f5f7;color:#647b89;border-radius:999px;font-size:11px;padding:5px 10px;white-space:nowrap}
+.drawing-body{padding:20px 22px 22px}.canvas-stage{position:relative;display:flex;justify-content:center;align-items:center;padding:12px;background:linear-gradient(145deg,#f7fbfc,#eef5f7);border:1px solid #e5eff1;border-radius:18px;overflow:hidden}.draw-canvas{display:block;width:min(100%,660px);height:auto;aspect-ratio:3/2;background:#fff;border:1px solid #e1ebef;border-radius:13px;box-shadow:0 3px 12px rgba(18,52,70,.045);touch-action:none;cursor:crosshair;user-select:none;-webkit-user-select:none}.canvas-hint{position:absolute;inset:12px;display:flex;align-items:center;justify-content:center;pointer-events:none;color:#afbdc5;font-size:clamp(14px,2.4vw,19px);font-weight:500;transition:opacity .2s}.canvas-hint.hidden{opacity:0}.grid-hint{font-size:11px;color:#8196a2;text-align:center;margin:11px 0 0}.toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-top:15px}.tool-group{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.btn{border:0;border-radius:12px;padding:10px 14px;font-weight:700;font-size:12px;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:transform .16s ease,filter .16s ease,background .16s ease;min-height:42px}.btn:active{transform:translateY(1px) scale(.99)}.btn:disabled{opacity:.48;cursor:not-allowed;filter:grayscale(.2)}.btn-soft{background:#f0f5f7;color:#526b79}.btn-soft:hover{background:#e8f0f3}.btn-primary{background:linear-gradient(135deg,#19c9c1,#079b9a);color:#fff;box-shadow:0 6px 15px rgba(8,174,169,.2)}.btn-primary:hover{filter:brightness(1.04)}.btn-dark{background:var(--navy2);color:#fff}.btn-dark:hover{background:#1a4057}.btn-danger{background:#fff0f1;color:#c64d5a}.btn-danger:hover{background:#ffe5e7}.btn-small{min-height:34px;padding:7px 10px;border-radius:9px;font-size:11px}.btn.active-tool{background:#dff9f6;color:#078e8b;box-shadow:inset 0 0 0 1px #9fe5df}.brush-control{display:flex;align-items:center;gap:8px;background:#f5f8fa;border-radius:11px;padding:5px 10px;color:#6f8591;font-size:10px}.brush-control input{width:82px;accent-color:#079b9a}.recognize-btn{width:100%;margin-top:16px;min-height:50px;font-size:14px;border-radius:14px}.status-line{min-height:27px;display:flex;align-items:center;gap:8px;color:#80939e;font-size:11px;margin-top:10px}.status-dot{width:7px;height:7px;border-radius:50%;background:#a7b5bd;flex:none}.status-line.success{color:#118d84}.status-line.success .status-dot{background:#16b7a6}.status-line.error{color:#c64d5a}.status-line.error .status-dot{background:#de6873}.spinner{width:13px;height:13px;border:2px solid #d4f5f2;border-top-color:#079b9a;border-radius:50%;animation:spin .7s linear infinite;display:none}.status-line.loading .spinner{display:block}.status-line.loading .status-dot{display:none}@keyframes spin{to{transform:rotate(360deg)}}
+.results-area{padding:0 22px 21px}.results-top{display:flex;justify-content:space-between;align-items:center;margin:0 0 10px}.results-top h4{font-size:12px;margin:0;color:#506a79}.results-top span{font-size:10px;color:#91a2ac}.results-empty{padding:18px;text-align:center;background:#f7fafb;border:1px dashed #dce8ec;border-radius:14px;color:#94a5ae;font-size:11px}.result-feature{display:none;background:linear-gradient(115deg,#0d2a40,#17445a);color:#fff;padding:14px 16px;border-radius:15px;margin-bottom:12px;align-items:center;justify-content:space-between;gap:12px;animation:rise .35s ease}.result-feature.show{display:flex}@keyframes rise{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}.feature-label{font-size:10px;color:#b3cbd4}.feature-digit{font-size:38px;line-height:1.2;font-weight:800;color:#4be0d4;margin-top:1px}.feature-meta{text-align:left}.confidence{font-size:12px;font-weight:bold}.confidence-sub{font-size:10px;color:#b4cbd4;margin-top:2px}.candidates{display:grid;gap:7px}.candidate{display:grid;grid-template-columns:34px minmax(0,1fr) auto auto;align-items:center;gap:9px;padding:8px 10px;border:1px solid #edf2f4;border-radius:12px;transition:border .15s,background .15s}.candidate.best{border-color:#a8e8e3;background:#f1fcfb}.cand-digit{width:32px;height:32px;background:#f1f5f7;border-radius:9px;display:grid;place-items:center;font-size:18px;font-weight:bold;color:#183b52}.candidate.best .cand-digit{background:#d9f8f4;color:#078e8b}.cand-info{min-width:0}.cand-name{font-size:11px;font-weight:bold;color:#395666}.cand-script{font-size:9px;color:#99a9b1;margin-top:1px}.score-wrap{display:flex;align-items:center;gap:7px}.score{font-size:11px;font-weight:bold;color:#506a79;min-width:34px;text-align:left}.mini-bar{width:42px;height:5px;background:#edf2f4;border-radius:9px;overflow:hidden}.mini-bar i{display:block;height:100%;background:linear-gradient(90deg,#31d8ca,#079b9a);border-radius:9px}
+.output-card{margin-top:20px}.output-body{padding:19px 22px 22px}.output-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:11px}.output-head label{font-size:12px;color:#506a79;font-weight:bold}.select-wrap{position:relative}.select-wrap select{appearance:none;border:1px solid #e2ebef;border-radius:10px;background:#f9fbfc;color:#496271;padding:8px 12px 8px 28px;font-size:11px;cursor:pointer}.select-wrap:after{content:"⌄";position:absolute;left:10px;top:2px;color:#71909c;pointer-events:none}#outputText{width:100%;min-height:96px;resize:vertical;border:1px solid #e4edf0;background:#fbfdfe;border-radius:14px;padding:14px 15px;color:#16364b;font-size:22px;line-height:1.8;letter-spacing:1px;direction:rtl}#outputText::placeholder{font-size:12px;color:#a4b2b9;letter-spacing:0}.output-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.output-foot{font-size:10px;color:#96a7b0;margin-top:10px}.training-card{margin-top:20px}.training-body{padding:19px 22px 21px}.training-intro{font-size:11px;color:#7d929e;margin:0 0 14px;line-height:1.9}.training-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;align-items:end}.field label{display:block;font-size:10px;color:#728995;margin-bottom:6px}.field select{width:100%;border:1px solid #e3ecef;border-radius:11px;padding:10px 12px;background:#fbfdfe;color:#284658;font-size:12px}.training-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:14px;padding-top:13px;border-top:1px solid #eff3f5}.training-count{font-size:10px;color:#8a9ca5}.training-count strong{font-size:13px;color:#098f8b}.footer{text-align:center;color:#9aabb4;font-size:10px;padding:23px 10px 4px}.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);background:#0c2a40;color:#fff;padding:11px 17px;border-radius:12px;font-size:12px;box-shadow:0 10px 30px rgba(0,0,0,.18);opacity:0;pointer-events:none;transition:all .25s;z-index:50;max-width:calc(100% - 32px);text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.intro{align-items:start}.app-header{padding-top:21px;padding-bottom:28px}.drawing-body{padding-bottom:17px}.draw-canvas{width:100%}}@media(max-width:520px){.app-header{padding-left:16px;padding-right:16px}.header-inner{align-items:flex-start}.brand-mark{width:45px;height:45px;border-radius:14px}.brand h1{font-size:19px}.header-badge{font-size:10px;padding:7px 9px}.header-badge span:last-child{display:none}main{padding:0 12px 30px}.intro{padding:20px 3px 16px;display:block}.intro h2{font-size:19px}.offline-note{display:inline-block;margin-top:10px}.card{border-radius:18px}.card-head{padding:16px 16px 13px}.drawing-body,.output-body,.training-body{padding-left:15px;padding-right:15px}.results-area{padding-left:15px;padding-right:15px}.canvas-stage{padding:7px}.canvas-hint{inset:7px}.toolbar{align-items:stretch}.tool-group{flex:1}.tool-group .btn{flex:1}.toolbar>.btn{flex:1}.brush-control{justify-content:center}.brush-control input{width:70px}.output-actions .btn{flex:1}.training-row{grid-template-columns:1fr}.training-row .btn{width:100%}.training-bottom{align-items:flex-start;flex-direction:column}.candidate{grid-template-columns:32px minmax(0,1fr) auto}.candidate .mini-bar{display:none}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
-<header class="app-header">
-  <div class="header-inner">
-    <div class="brand">
-      <div class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 32 32" fill="none"><rect x="3" y="3" width="8" height="8" rx="2" fill="white"/><rect x="13" y="3" width="6" height="8" rx="2" fill="white" opacity=".65"/><rect x="21" y="3" width="8" height="8" rx="2" fill="white" opacity=".35"/><rect x="3" y="13" width="8" height="6" rx="2" fill="white" opacity=".65"/><rect x="13" y="13" width="6" height="6" rx="2" fill="white"/><rect x="21" y="13" width="8" height="6" rx="2" fill="white" opacity=".65"/><rect x="3" y="21" width="8" height="8" rx="2" fill="white" opacity=".35"/><rect x="13" y="21" width="6" height="8" rx="2" fill="white" opacity=".65"/><rect x="21" y="21" width="8" height="8" rx="2" fill="white"/></svg>
-      </div>
-      <div><h1>پیکسل‌خوان</h1><p>سامانه هوشمند تشخیص اعداد</p></div>
-    </div>
-    <div class="header-badge"><i class="live-dot"></i><span>پردازش محلی و آفلاین</span></div>
-  </div>
-</header>
+<header class="app-header"><div class="header-inner"><div class="brand"><div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M7 23.5 13.3 17l4.3 4.3L25 13" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 13h6v6" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><h1>پیکسل‌خوان</h1><p>سامانه هوشمند تشخیص اعداد دست‌نویس</p></div></div><div class="header-badge"><i class="live-dot"></i><span>پردازش محلی و آفلاین</span></div></div></header>
 <main>
-  <section class="intro">
-    <div><h2>عددت رو پیکسلی بنویس</h2><p>خانه‌ها رو روشن کن، عدد رو تشخیص بده و به متن خروجی اضافه کن.</p></div>
-    <div class="offline-note">◆ بدون سرور · بدون ثبت‌نام</div>
-  </section>
-
-  <div class="layout">
-    <section class="card" aria-labelledby="drawTitle">
-      <div class="card-head">
-        <div class="card-title"><div class="card-icon">▦</div><div><h3 id="drawTitle">بوم رسم عدد</h3><p>شبکه ۷ ستون × ۹ ردیف</p></div></div>
-        <span class="count-pill" id="pixelCount">۰ پیکسل روشن</span>
-      </div>
-      <div class="drawing-body">
-        <div class="grid-stage"><div class="pixel-grid" id="pixelGrid" role="grid" aria-label="شبکه رسم عدد هفت در نه"></div></div>
-        <p class="grid-hint">برای روشن/خاموش کردن لمس کن یا انگشت و ماوس رو روی خانه‌ها بکش.</p>
-        <div class="toolbar">
-          <div class="tool-group">
-            <button class="btn btn-soft" id="undoBtn" type="button" title="بازگردانی آخرین تغییر">↶ بازگشت</button>
-            <button class="btn btn-danger" id="clearGridBtn" type="button">× پاک‌کردن شبکه</button>
-          </div>
-          <button class="btn btn-soft" id="invertBtn" type="button" title="معکوس کردن خانه‌ها">◐ معکوس‌سازی</button>
-        </div>
-        <button class="btn btn-primary recognize-btn" id="recognizeBtn" type="button">✦ تشخیص عدد</button>
-        <div class="status-line" id="statusLine" aria-live="polite"><span class="status-dot"></span><span class="spinner"></span><span id="statusText">منتظر رسم عدد هستم.</span></div>
-      </div>
-      <div class="results-area">
-        <div class="results-top"><h4>نتایج احتمالی تشخیص</h4><span>۵ گزینه برتر</span></div>
-        <div class="result-feature" id="resultFeature">
-          <div><div class="feature-label">محتمل‌ترین تشخیص</div><div class="feature-digit" id="featureDigit">۰</div></div>
-          <div class="feature-meta"><div class="confidence" id="featureScore">۹۸٪ شباهت</div><div class="confidence-sub" id="featureConfidence">اطمینان بالا</div></div>
-        </div>
-        <div class="results-empty" id="resultsEmpty">بعد از رسم یک عدد، روی «تشخیص عدد» بزن.</div>
-        <div class="candidates" id="candidates"></div>
-      </div>
-    </section>
-
-    <div>
-      <section class="card output-card" aria-labelledby="outputTitle">
-        <div class="card-head">
-          <div class="card-title"><div class="card-icon">⌨</div><div><h3 id="outputTitle">متن خروجی</h3><p>رقم‌های تشخیص‌داده‌شده به ترتیب اینجا قرار می‌گیرند</p></div></div>
-          <span class="count-pill" id="outputCount">۰ رقم</span>
-        </div>
-        <div class="output-body">
-          <div class="output-head"><label for="outputText">خروجی قابل ویرایش</label><div class="select-wrap"><select id="digitMode" aria-label="نوع ارقام خروجی"><option value="fa">اعداد فارسی ۱۲۳</option><option value="en">اعداد انگلیسی 123</option></select></div></div>
-          <textarea id="outputText" spellcheck="false" placeholder="رقم‌های تشخیص‌داده‌شده اینجا جمع می‌شن…"></textarea>
-          <div class="output-actions">
-            <button class="btn btn-primary" id="copyBtn" type="button">▣ کپی خروجی</button>
-            <button class="btn btn-soft" id="deleteLastBtn" type="button">⌫ حذف رقم آخر</button>
-            <button class="btn btn-soft" id="deleteSelectedBtn" type="button">− حذف انتخاب‌شده</button>
-            <button class="btn btn-danger" id="clearOutputBtn" type="button">پاک‌کردن همه</button>
-          </div>
-          <div class="output-foot">می‌تونی متن رو مستقیم ویرایش کنی؛ تشخیص‌های بعدی به انتهای متن اضافه می‌شن.</div>
-        </div>
-      </section>
-
-      <section class="card training-card" aria-labelledby="trainingTitle">
-        <div class="card-head">
-          <div class="card-title"><div class="card-icon">✚</div><div><h3 id="trainingTitle">آموزش نمونه جدید</h3><p>دقت تشخیص رو با نمونه‌های خودت بهتر کن</p></div></div>
-          <span class="count-pill">یادگیری شخصی</span>
-        </div>
-        <div class="training-body">
-          <p class="training-intro">اگر شکل رسم‌شده رو می‌دونی اما تشخیص دقیق نبوده، رقم درست رو انتخاب کن و همین الگو رو ذخیره کن. نمونه‌ها فقط روی همین دستگاه نگهداری می‌شن.</p>
-          <div class="training-row">
-            <div class="field"><label for="trainingDigit">این شکل مربوط به کدام عدد است؟</label><select id="trainingDigit"></select></div>
-            <button class="btn btn-dark" id="saveSampleBtn" type="button">＋ ذخیره نمونه آموزشی</button>
-          </div>
-          <div class="training-bottom">
-            <div class="training-count">نمونه‌های شخصی ذخیره‌شده: <strong id="sampleCount">۰</strong></div>
-            <button class="btn btn-soft btn-small" id="clearSamplesBtn" type="button">حذف نمونه‌های آموزشی من</button>
-          </div>
-        </div>
-      </section>
-    </div>
-  </div>
-  <div class="footer">پیکسل‌خوان · تشخیص مبتنی بر تطبیق الگو و نمونه‌های آموزشی محلی</div>
-</main>
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
-
+<section class="intro"><div><h2>عددت رو با دست بنویس</h2><p>بدون خانه‌های پیکسلی؛ با قلم نرم بنویس و رقم فارسی یا انگلیسی را تشخیص بده.</p></div><div class="offline-note">◆ بدون سرور · بدون ثبت‌نام</div></section>
+<div class="layout">
+<section class="card" aria-labelledby="drawTitle">
+<div class="card-head"><div class="card-title"><div class="card-icon">✎</div><div><h3 id="drawTitle">بوم رسم عدد</h3><p>هر بار فقط یک رقم بنویس</p></div></div><span class="count-pill" id="strokeCount">۰ حرکت قلم</span></div>
+<div class="drawing-body">
+<div class="canvas-stage"><canvas id="drawCanvas" class="draw-canvas" width="900" height="600" aria-label="محل نوشتن عدد با لمس یا ماوس"></canvas><div id="canvasHint" class="canvas-hint">عدد را اینجا بنویس</div></div>
+<p class="grid-hint">با انگشت یا ماوس، عدد را طبیعی و پیوسته بنویس. ضخامت قلم را هم می‌توانی تغییر بدهی.</p>
+<div class="toolbar">
+<div class="tool-group"><button class="btn btn-soft active-tool" id="penBtn" type="button">✎ قلم</button><button class="btn btn-soft" id="eraserBtn" type="button">⌫ پاک‌کن</button><button class="btn btn-soft" id="undoBtn" type="button">↶ بازگشت</button></div>
+<div class="tool-group"><label class="brush-control" for="brushSize">ضخامت <input id="brushSize" type="range" min="12" max="42" value="24"><strong id="brushValue">۲۴</strong></label><button class="btn btn-danger" id="clearCanvasBtn" type="button">× پاک‌کردن</button></div>
+</div>
+<button class="btn btn-primary recognize-btn" id="recognizeBtn" type="button">✦ تشخیص هوشمند عدد</button>
+<div class="status-line" id="statusLine" aria-live="polite"><span class="status-dot"></span><span class="spinner"></span><span id="statusText">منتظر نوشتن عدد هستم.</span></div>
+</div>
+<div class="results-area"><div class="results-top"><h4>نتایج احتمالی تشخیص</h4><span>۵ گزینه برتر</span></div><div class="result-feature" id="resultFeature"><div><div class="feature-label">محتمل‌ترین تشخیص</div><div class="feature-digit" id="featureDigit">۰</div></div><div class="feature-meta"><div class="confidence" id="featureScore">—</div><div class="confidence-sub" id="featureConfidence">—</div></div></div><div class="results-empty" id="resultsEmpty">بعد از نوشتن یک رقم، روی «تشخیص هوشمند عدد» بزن.</div><div class="candidates" id="candidates"></div></div>
+</section>
+<div>
+<section class="card output-card" aria-labelledby="outputTitle"><div class="card-head"><div class="card-title"><div class="card-icon">⌨</div><div><h3 id="outputTitle">متن خروجی</h3><p>رقم‌های تشخیص‌داده‌شده به ترتیب اینجا قرار می‌گیرند</p></div></div><span class="count-pill" id="outputCount">۰ رقم</span></div><div class="output-body"><div class="output-head"><label for="outputText">خروجی قابل ویرایش</label><div class="select-wrap"><select id="digitMode" aria-label="نوع ارقام خروجی"><option value="fa">اعداد فارسی ۱۲۳</option><option value="en">اعداد انگلیسی 123</option></select></div></div><textarea id="outputText" spellcheck="false" placeholder="رقم‌های تشخیص‌داده‌شده اینجا جمع می‌شن…"></textarea><div class="output-actions"><button class="btn btn-primary" id="copyBtn" type="button">▣ کپی خروجی</button><button class="btn btn-soft" id="deleteLastBtn" type="button">⌫ حذف رقم آخر</button><button class="btn btn-soft" id="deleteSelectedBtn" type="button">− حذف انتخاب‌شده</button><button class="btn btn-danger" id="clearOutputBtn" type="button">پاک‌کردن همه</button></div><div class="output-foot">می‌تونی متن رو مستقیم ویرایش کنی؛ تشخیص‌های بعدی به انتهای متن اضافه می‌شن.</div></div></section>
+<section class="card training-card" aria-labelledby="trainingTitle"><div class="card-head"><div class="card-title"><div class="card-icon">✚</div><div><h3 id="trainingTitle">آموزش نمونه جدید</h3><p>دقت تشخیص را با دست‌خط خودت بهتر کن</p></div></div><span class="count-pill">یادگیری شخصی</span></div><div class="training-body"><p class="training-intro">اگر تشخیص اشتباه بود، رقم درست را انتخاب کن و همین دست‌خط را ذخیره کن. نمونه‌های ذخیره‌شده در همین مرورگر می‌مانند و در تشخیص‌های بعدی استفاده می‌شوند.</p><div class="training-row"><div class="field"><label for="trainingDigit">این شکل مربوط به کدام عدد است؟</label><select id="trainingDigit"></select></div><button class="btn btn-dark" id="saveSampleBtn" type="button">＋ ذخیره نمونه آموزشی</button></div><div class="training-bottom"><div class="training-count">نمونه‌های شخصی ذخیره‌شده: <strong id="sampleCount">۰</strong></div><button class="btn btn-soft btn-small" id="clearSamplesBtn" type="button">حذف نمونه‌های آموزشی من</button></div></div></section>
+</div></div>
+<div class="footer">پیکسل‌خوان · تشخیص ترکیبی مبتنی بر شکل، لبه‌ها، تراکم خطوط و نمونه‌های آموزشی</div>
+</main><div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
 (() => {
-  'use strict';
-  const ROWS = 9, COLS = 7, STORAGE_KEY = 'pixelkhan_custom_samples_v1';
-  const FA_DIGITS = '۰۱۲۳۴۵۶۷۸۹';
-  const DIGIT_NAMES = ['صفر','یک','دو','سه','چهار','پنج','شش','هفت','هشت','نه'];
-  const $ = id => document.getElementById(id);
-  const gridEl = $('pixelGrid'), outputEl = $('outputText');
-  let matrix = Array.from({length:ROWS}, () => Array(COLS).fill(0));
-  let history = [], painting = false, paintValue = 1, strokeChanged = false, strokeSnapshot = null;
-  let customSamples = loadSamples(), toastTimer = null, lastCandidates = [];
+'use strict';
+const W=900,H=600,N=28,STORE='pixelkhan_handwriting_samples_v2',MAX_SAMPLES=120;
+const FA='۰۱۲۳۴۵۶۷۸۹',DIGIT_NAMES=['صفر','یک','دو','سه','چهار','پنج','شش','هفت','هشت','نه'];
+const GLYPHS=[{text:'0123456789',script:'انگلیسی'},{text:'۰۱۲۳۴۵۶۷۸۹',script:'فارسی'},{text:'٠١٢٣٤٥٦٧٨٩',script:'عربی'}];
+const $=id=>document.getElementById(id),canvas=$('drawCanvas'),ctx=canvas.getContext('2d',{willReadFrequently:true}),output=$('outputText');
+let strokes=[],activeStroke=null,drawing=false,tool='pen',samples=loadSamples(),lastCandidates=[],currentFeature=null,toastTimer=null,templateCache=null;
 
-  // الگوهای پایه برای هر دو شیوه نوشتن؛ هر الگو به چند نسخه ضخیم‌تر، نازک‌تر و متمایل تبدیل می‌شود.
-  const RAW_PATTERNS = {
-    en: [
-      ['0111110','1100011','1100011','1100111','1101011','1110011','1100011','1100011','0111110'],
-      ['0011000','0111000','0011000','0011000','0011000','0011000','0011000','0011000','0111110'],
-      ['0111110','1100011','0000011','0000110','0001100','0011000','0110000','1100000','1111111'],
-      ['1111110','0000011','0000011','0011110','0000011','0000011','0000011','1100011','0111110'],
-      ['0000110','0001110','0010110','0100110','1000110','1111111','0000110','0000110','0000110'],
-      ['1111111','1100000','1100000','1111110','0000011','0000011','0000011','1100011','0111110'],
-      ['0011110','0110000','1100000','1100000','1111110','1100011','1100011','1100011','0111110'],
-      ['1111111','0000011','0000110','0001100','0001100','0011000','0011000','0011000','0011000'],
-      ['0111110','1100011','1100011','0111110','1100011','1100011','1100011','1100011','0111110'],
-      ['0111110','1100011','1100011','1100011','0111111','0000011','0000011','0000110','0111100']
-    ],
-    fa: [
-      ['0011100','0110010','1100010','1100010','1100010','1100010','1100010','0110010','0011100'],
-      ['0001000','0011000','0001000','0001000','0001000','0001000','0001000','0001000','0011100'],
-      ['0111100','1100110','0000110','0001100','0011000','0110000','1100000','1100010','0111110'],
-      ['1100000','0111000','0001100','0000110','0000110','0001100','0111000','1100000','0000000'],
-      ['0000110','0001100','0011000','0110000','1100110','1111110','0000110','0000110','0000110'],
-      ['0111100','1100010','1100000','1111000','0001100','0000110','0000010','1100010','0111100'],
-      ['0000000','0001110','0011000','0110000','1100000','1100000','1100110','0110110','0011100'],
-      ['1111110','0000110','0001100','0011000','0110000','0110000','1100000','1000000','0000000'],
-      ['0110010','1100110','1100110','0110010','0011000','0110010','1100110','1100110','0110010'],
-      ['0111100','1100110','1100110','1100110','0111110','0000110','0001100','0111000','1100000']
-    ]
-  };
+function faNum(v){return String(v).replace(/[0-9]/g,d=>FA[Number(d)]);}
+function toast(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2500);}
+function status(message,type='normal'){$('statusText').textContent=message;$('statusLine').className='status-line'+(type==='normal'?'':' '+type);}
+function hasInk(){return strokes.some(s=>s.points.length>0&&!s.erase);}
+function updateStrokeCount(){$('strokeCount').textContent=faNum(strokes.length)+' حرکت قلم';$('undoBtn').disabled=!strokes.length;$('canvasHint').classList.toggle('hidden',hasInk());}
+function updateBrushLabel(){$('brushValue').textContent=faNum($('brushSize').value);}
+function drawOneStroke(c,s){if(!s.points.length)return;c.save();c.globalCompositeOperation='source-over';c.strokeStyle=s.erase?'#ffffff':'#153d52';c.fillStyle=s.erase?'#ffffff':'#153d52';c.lineWidth=s.width;c.lineCap='round';c.lineJoin='round';if(s.points.length===1){c.beginPath();c.arc(s.points[0].x,s.points[0].y,s.width/2,0,Math.PI*2);c.fill();}else{c.beginPath();c.moveTo(s.points[0].x,s.points[0].y);for(let i=1;i<s.points.length;i++){const p=s.points[i],prev=s.points[i-1],mx=(prev.x+p.x)/2,my=(prev.y+p.y)/2;c.quadraticCurveTo(prev.x,prev.y,mx,my);}const last=s.points[s.points.length-1];c.lineTo(last.x,last.y);c.stroke();}c.restore();}
+function redraw(){ctx.save();ctx.globalCompositeOperation='source-over';ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);ctx.restore();for(const s of strokes)drawOneStroke(ctx,s);updateStrokeCount();currentFeature=null;hideResults();}
+function pointerPos(e){const r=canvas.getBoundingClientRect();return{x:Math.max(0,Math.min(W,(e.clientX-r.left)*W/r.width)),y:Math.max(0,Math.min(H,(e.clientY-r.top)*H/r.height))};}
+canvas.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;e.preventDefault();drawing=true;const p=pointerPos(e);activeStroke={points:[p],width:Number($('brushSize').value),erase:tool==='eraser'};strokes.push(activeStroke);try{canvas.setPointerCapture(e.pointerId);}catch(_){}redraw();});
+canvas.addEventListener('pointermove',e=>{if(!drawing||!activeStroke)return;e.preventDefault();const p=pointerPos(e),last=activeStroke.points[activeStroke.points.length-1];if(Math.hypot(p.x-last.x,p.y-last.y)<1.5)return;activeStroke.points.push(p);redraw();});
+function endStroke(){if(!drawing)return;drawing=false;activeStroke=null;updateStrokeCount();if(hasInk())status('عدد ثبت شد؛ آماده تشخیص هستم.');}
+canvas.addEventListener('pointerup',endStroke);canvas.addEventListener('pointercancel',endStroke);canvas.addEventListener('lostpointercapture',endStroke);
+$('penBtn').addEventListener('click',()=>setTool('pen'));$('eraserBtn').addEventListener('click',()=>setTool('eraser'));
+function setTool(next){tool=next;$('penBtn').classList.toggle('active-tool',tool==='pen');$('eraserBtn').classList.toggle('active-tool',tool==='eraser');canvas.style.cursor=tool==='eraser'?'cell':'crosshair';}
+$('brushSize').addEventListener('input',updateBrushLabel);
+$('undoBtn').addEventListener('click',()=>{if(!strokes.length)return;strokes.pop();redraw();status('آخرین حرکت قلم بازگردانی شد.');});
+$('clearCanvasBtn').addEventListener('click',()=>{if(!strokes.length){toast('بوم از قبل خالی است.');return;}strokes=[];redraw();status('بوم پاک شد.');});
 
-  function toMatrix(rows){ return rows.map(row => [...row].map(ch => ch === '1' ? 1 : 0)); }
-  function cloneMatrix(m){ return m.map(row => row.slice()); }
-  function flatten(m){ return m.flat(); }
-  function fromFlat(a){ return Array.from({length:ROWS},(_,r)=>a.slice(r*COLS,(r+1)*COLS)); }
-  function normalize(m){
-    let minX=COLS,minY=ROWS,maxX=-1,maxY=-1;
-    for(let y=0;y<ROWS;y++) for(let x=0;x<COLS;x++) if(m[y][x]>.12){minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y);}
-    if(maxX<minX) return Array(ROWS*COLS).fill(0);
-    const srcW=maxX-minX+1,srcH=maxY-minY+1, maxW=5.8,maxH=7.8;
-    const scale=Math.min(maxW/srcW,maxH/srcH);
-    const w=Math.max(1,Math.round(srcW*scale)),h=Math.max(1,Math.round(srcH*scale));
-    const left=(COLS-w)/2,top=(ROWS-h)/2,out=Array.from({length:ROWS},()=>Array(COLS).fill(0));
-    for(let y=0;y<ROWS;y++) for(let x=0;x<COLS;x++){
-      const sx=minX+((x+.5-left)/w)*srcW-.5, sy=minY+((y+.5-top)/h)*srcH-.5;
-      if(x+.5<left || x+.5>left+w || y+.5<top || y+.5>top+h) continue;
-      const x0=Math.max(minX,Math.min(maxX,Math.floor(sx))),y0=Math.max(minY,Math.min(maxY,Math.floor(sy)));
-      const x1=Math.min(maxX,x0+1),y1=Math.min(maxY,y0+1),fx=Math.max(0,Math.min(1,sx-x0)),fy=Math.max(0,Math.min(1,sy-y0));
-      const a=m[y0][x0]*(1-fx)+m[y0][x1]*fx,b=m[y1][x0]*(1-fx)+m[y1][x1]*fx;
-      out[y][x]=a*(1-fy)+b*fy;
-    }
-    return flatten(out);
-  }
-  function morph(m,mode){
-    const out=Array.from({length:ROWS},()=>Array(COLS).fill(0));
-    for(let y=0;y<ROWS;y++) for(let x=0;x<COLS;x++){
-      if(mode==='dilate'){
-        let on=0;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const yy=y+dy,xx=x+dx;if(yy>=0&&yy<ROWS&&xx>=0&&xx<COLS&&m[yy][xx])on=1;}out[y][x]=on;
-      }else if(mode==='erode'){
-        let on=1;for(const [dy,dx] of [[-1,0],[1,0],[0,-1],[0,1]]){const yy=y+dy,xx=x+dx;if(yy<0||yy>=ROWS||xx<0||xx>=COLS||!m[yy][xx])on=0;}out[y][x]=m[y][x]&&on;
-      }else if(mode==='slantL' || mode==='slantR'){
-        const shift=Math.round((y-4)*.12*(mode==='slantL'?-1:1));const xx=x-shift;if(xx>=0&&xx<COLS)out[y][x]=m[y][xx];
-      }
-    }
-    return out;
-  }
-  function makeVariants(rows){
-    const base=toMatrix(rows), variants=[base,morph(base,'dilate'),morph(base,'erode'),morph(base,'slantL'),morph(base,'slantR')];
-    const seen=new Set(), result=[];
-    for(const v of variants){const n=normalize(v),key=n.map(x=>Math.round(x*3)).join('');if(!seen.has(key)&&n.some(x=>x>.1)){seen.add(key);result.push(n);}}
-    return result;
-  }
-  const referenceTemplates=[];
-  for(const script of ['en','fa']) RAW_PATTERNS[script].forEach((rows,digit)=>makeVariants(rows).forEach((pattern,variant)=>referenceTemplates.push({digit,pattern,source:script,variant})));
+// تبدیل تصویر رسم‌شده به ماتریس نرم ۲۸×۲۸ و هم‌ترازسازی بر اساس مرکز جرم
+function normalizeRaster(rgba,width,height){
+ const ink=new Float32Array(width*height);let minX=width,minY=height,maxX=-1,maxY=-1;
+ for(let y=0;y<height;y++)for(let x=0;x<width;x++){const i=(y*width+x)*4,lum=.299*rgba[i]+.587*rgba[i+1]+.114*rgba[i+2];let v=Math.max(0,Math.min(1,(248-lum)/190));if(v<.07)v=0;ink[y*width+x]=v;if(v>.12){if(x<minX)minX=x;if(x>maxX)maxX=x;if(y<minY)minY=y;if(y>maxY)maxY=y;}}
+ if(maxX<minX)return null;
+ const sw=maxX-minX+1,sh=maxY-minY+1,scale=Math.min(22/sw,26/sh),dw=Math.max(1,sw*scale),dh=Math.max(1,sh*scale),left=(N-dw)/2,top=(N-dh)/2;
+ const out=new Float32Array(N*N);
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){const u=(x+.5-left)/scale+minX-.5,v=(y+.5-top)/scale+minY-.5;if(u<minX-.5||u>maxX+.5||v<minY-.5||v>maxY+.5)continue;const x0=Math.max(minX,Math.min(maxX,Math.floor(u))),y0=Math.max(minY,Math.min(maxY,Math.floor(v))),x1=Math.min(maxX,x0+1),y1=Math.min(maxY,y0+1),fx=Math.max(0,Math.min(1,u-x0)),fy=Math.max(0,Math.min(1,v-y0));const a=ink[y0*width+x0]*(1-fx)+ink[y0*width+x1]*fx,b=ink[y1*width+x0]*(1-fx)+ink[y1*width+x1]*fx;out[y*N+x]=a*(1-fy)+b*fy;}
+ let mass=0,cx=0,cy=0;for(let y=0;y<N;y++)for(let x=0;x<N;x++){const v=out[y*N+x];mass+=v;cx+=x*v;cy+=y*v;}if(!mass)return null;cx/=mass;cy/=mass;const dx=13.5-cx,dy=13.5-cy,centered=new Float32Array(N*N);
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){const sx=x-dx,sy=y-dy,x0=Math.floor(sx),y0=Math.floor(sy),fx=sx-x0,fy=sy-y0;let val=0;for(let oy=0;oy<=1;oy++)for(let ox=0;ox<=1;ox++){const xx=x0+ox,yy=y0+oy;if(xx>=0&&xx<N&&yy>=0&&yy<N)val+=out[yy*N+xx]*(ox?fx:1-fx)*(oy?fy:1-fy);}centered[y*N+x]=val;}
+ return centered;
+}
+function featureFromPixels(pixels){
+ const mask=new Uint8Array(N*N);let inkCount=0;for(let i=0;i<pixels.length;i++)if(pixels[i]>.22){mask[i]=1;inkCount++;}if(!inkCount)return null;
+ // فاصله تا نزدیک‌ترین پیکسل روشن با تبدیل فاصله دو مرحله‌ای
+ const dist=new Float32Array(N*N);for(let i=0;i<dist.length;i++)dist[i]=mask[i]?0:99;
+ const d1=Math.SQRT2;for(let y=0;y<N;y++)for(let x=0;x<N;x++){const i=y*N+x;if(x>0)dist[i]=Math.min(dist[i],dist[i-1]+1);if(y>0)dist[i]=Math.min(dist[i],dist[i-N]+1);if(x>0&&y>0)dist[i]=Math.min(dist[i],dist[i-N-1]+d1);if(x<N-1&&y>0)dist[i]=Math.min(dist[i],dist[i-N+1]+d1);}
+ for(let y=N-1;y>=0;y--)for(let x=N-1;x>=0;x--){const i=y*N+x;if(x<N-1)dist[i]=Math.min(dist[i],dist[i+1]+1);if(y<N-1)dist[i]=Math.min(dist[i],dist[i+N]+1);if(x<N-1&&y<N-1)dist[i]=Math.min(dist[i],dist[i+N+1]+d1);if(x>0&&y<N-1)dist[i]=Math.min(dist[i],dist[i+N-1]+d1);}
+ // ویژگی جهت لبه‌ها (HOG ساده) در ۴×۴ ناحیه با ۸ جهت
+ const hog=new Float32Array(4*4*8);for(let y=1;y<N-1;y++)for(let x=1;x<N-1;x++){const gx=pixels[y*N+x+1]-pixels[y*N+x-1],gy=pixels[(y+1)*N+x]-pixels[(y-1)*N+x],mag=Math.hypot(gx,gy);if(mag<.025)continue;let angle=Math.atan2(gy,gx);if(angle<0)angle+=Math.PI*2;const bin=Math.floor(angle/(Math.PI*2)*8)%8,cellX=Math.min(3,Math.floor(x/7)),cellY=Math.min(3,Math.floor(y/7));hog[(cellY*4+cellX)*8+bin]+=mag;}
+ let hnorm=0;for(const v of hog)hnorm+=v*v;hnorm=Math.sqrt(hnorm)||1;for(let i=0;i<hog.length;i++)hog[i]/=hnorm;
+ const proj=new Float32Array(N*2);let total=0;for(let y=0;y<N;y++)for(let x=0;x<N;x++){const v=pixels[y*N+x];proj[y]+=v;proj[N+x]+=v;total+=v;}if(total){for(let i=0;i<proj.length;i++)proj[i]/=total;}
+ return{pixels,mask,dist,hog,proj,inkCount};
+}
+function captureFeature(){const image=ctx.getImageData(0,0,W,H),pixels=normalizeRaster(image.data,W,H);return pixels?featureFromPixels(pixels):null;}
 
-  function loadSamples(){
-    try{const value=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');return Array.isArray(value)?value.filter(s=>Number.isInteger(s.digit)&&s.digit>=0&&s.digit<=9&&Array.isArray(s.pattern)&&s.pattern.length===63).slice(-300):[];}
-    catch(e){return [];}
-  }
-  function saveSamples(){
-    try{localStorage.setItem(STORAGE_KEY,JSON.stringify(customSamples));return true;}
-    catch(e){showToast('ذخیره‌سازی در این مرورگر در دسترس نیست.');return false;}
-  }
-  function countOn(m=matrix){return m.reduce((sum,row)=>sum+row.reduce((a,b)=>a+(b>.12?1:0),0),0);}
-  function pushHistory(snapshot){history.push(cloneMatrix(snapshot));if(history.length>80)history.shift();updateUndo();}
-  function updateUndo(){ $('undoBtn').disabled=history.length===0; }
-  function drawGrid(){
-    gridEl.innerHTML='';
-    for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){
-      const cell=document.createElement('button');cell.type='button';cell.className='pixel'+(matrix[y][x]?' active':'');cell.dataset.x=x;cell.dataset.y=y;cell.setAttribute('role','gridcell');cell.setAttribute('aria-label',`ردیف ${y+1}، ستون ${x+1}`);cell.setAttribute('aria-pressed',matrix[y][x]?'true':'false');gridEl.appendChild(cell);
-    }
-    updatePixelCount();
-  }
-  function updatePixelCount(){ $('pixelCount').textContent=faNum(countOn())+' پیکسل روشن'; }
-  function faNum(n){return String(n).replace(/[0-9]/g,d=>FA_DIGITS[Number(d)]);}
-  function updateOutputCount(){const count=[...outputEl.value].filter(c=>/[0-9۰-۹]/.test(c)).length;$('outputCount').textContent=faNum(count)+' رقم';}
-  function setStatus(message,type='normal'){$('statusText').textContent=message;$('statusLine').className='status-line'+(type==='normal'?'':' '+type);}
-  function showToast(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2400);}
-
-  function startPaint(cell){
-    const x=Number(cell.dataset.x),y=Number(cell.dataset.y);strokeSnapshot=cloneMatrix(matrix);paintValue=matrix[y][x]?0:1;painting=true;strokeChanged=false;applyPaint(x,y);
-  }
-  function applyPaint(x,y){if(!painting||x<0||x>=COLS||y<0||y>=ROWS)return;if(matrix[y][x]!==paintValue){matrix[y][x]=paintValue;strokeChanged=true;const cell=gridEl.querySelector(`[data-x="${x}"][data-y="${y}"]`);if(cell){cell.classList.toggle('active',!!paintValue);cell.setAttribute('aria-pressed',paintValue?'true':'false');}updatePixelCount();}}
-  function endPaint(){if(!painting)return;painting=false;if(strokeChanged){pushHistory(strokeSnapshot);hideResults();setStatus('شبکه تغییر کرد؛ آماده تشخیص دوباره هستم.');}strokeSnapshot=null;}
-  gridEl.addEventListener('pointerdown',e=>{const cell=e.target.closest('.pixel');if(!cell)return;e.preventDefault();startPaint(cell);if(cell.setPointerCapture&&e.pointerId!==undefined){try{cell.setPointerCapture(e.pointerId)}catch(_){}}});
-  gridEl.addEventListener('pointermove',e=>{if(!painting)return;const el=document.elementFromPoint(e.clientX,e.clientY),cell=el&&el.closest('.pixel');if(cell)applyPaint(Number(cell.dataset.x),Number(cell.dataset.y));});
-  document.addEventListener('pointerup',endPaint);document.addEventListener('pointercancel',endPaint);
-  gridEl.addEventListener('click',e=>{if(e.detail===0){const c=e.target.closest('.pixel');if(c){startPaint(c);endPaint();}}});
-
-  function shiftFlat(a,dx,dy){const out=Array(63).fill(0);for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){const xx=x+dx,yy=y+dy;if(xx>=0&&xx<COLS&&yy>=0&&yy<ROWS)out[yy*COLS+xx]=a[y*COLS+x];}return out;}
-  const PIXEL_WEIGHTS=Array.from({length:63},(_,i)=>{const x=i%COLS,y=Math.floor(i/COLS);return .86+.14*(1-Math.abs(x-3)/4)*(1-Math.abs(y-4)/5);});
-  function chamferDistance(A,B){
-    const aa=[],bb=[];for(let i=0;i<63;i++){if(A[i]>.28)aa.push([i%COLS,Math.floor(i/COLS)]);if(B[i]>.28)bb.push([i%COLS,Math.floor(i/COLS)]);}
-    if(!aa.length&&!bb.length)return 0;if(!aa.length||!bb.length)return 1;
-    function directed(src,dst){let sum=0;for(const [x,y] of src){let best=99;for(const [xx,yy] of dst){const d=Math.hypot(x-xx,y-yy);if(d<best)best=d;}sum+=best;}return sum/src.length;}
-    return Math.min(1,(directed(aa,bb)+directed(bb,aa))/(2*2.35));
-  }
-  function similarity(input,template){
-    let best=0;
-    for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
-      const b=shiftFlat(template,dx,dy);let abs=0,weight=0,ham=0;
-      for(let i=0;i<63;i++){const w=PIXEL_WEIGHTS[i];abs+=Math.abs(input[i]-b[i])*w;weight+=w;if((input[i]>.38)!==(b[i]>.38))ham+=w;}
-      const soft=abs/weight,hamming=ham/weight,chamfer=chamferDistance(input,b);
-      const score=100*(1-(.51*soft+.18*hamming+.31*chamfer));if(score>best)best=score;
-    }
-    return Math.max(0,Math.min(100,best));
-  }
-  function classify(m){
-    const input=normalize(m);const scores=Array(10).fill(0);const byDigit=Array.from({length:10},()=>({score:0,source:'مرجع پایه'}));
-    const all=referenceTemplates.concat(customSamples.map(s=>({digit:s.digit,pattern:s.pattern,source:'نمونه شخصی'})));
-    for(const item of all){const score=similarity(input,item.pattern);if(score>scores[item.digit]){scores[item.digit]=score;byDigit[item.digit]={score,source:item.source};}}
-    return scores.map((score,digit)=>({digit,score,source:byDigit[digit].source})).sort((a,b)=>b.score-a.score).slice(0,5);
-  }
-  function hideResults(){lastCandidates=[];$('resultFeature').classList.remove('show');$('candidates').innerHTML='';$('resultsEmpty').style.display='block';$('resultsEmpty').textContent='شبکه تغییر کرده؛ برای دیدن نتیجه جدید دوباره تشخیص بده.';}
-  function renderCandidates(list,confidence){
-    lastCandidates=list;$('resultsEmpty').style.display='none';const top=list[0];
-    $('featureDigit').textContent=displayDigit(top.digit);$('featureScore').textContent=faNum(Math.round(top.score))+'٪ شباهت';
-    $('featureConfidence').textContent=confidence==='high'?'اطمینان بالا':confidence==='medium'?'اطمینان متوسط':'نیازمند بررسی';$('resultFeature').classList.add('show');
-    const holder=$('candidates');holder.innerHTML='';
-    list.forEach((item,index)=>{
-      const row=document.createElement('div');row.className='candidate'+(index===0?' best':'');
-      const digit=document.createElement('div');digit.className='cand-digit';digit.textContent=displayDigit(item.digit);
-      const info=document.createElement('div');info.className='cand-info';
-      const name=document.createElement('div');name.className='cand-name';name.textContent=DIGIT_NAMES[item.digit]+' · '+item.digit;
-      const source=document.createElement('div');source.className='cand-script';source.textContent=item.source==='نمونه شخصی'?'تقویت‌شده با نمونه آموزشی':'الگوی مرجع';info.append(name,source);
-      const score=document.createElement('div');score.className='score-wrap';const value=document.createElement('span');value.className='score';value.textContent=faNum(Math.round(item.score))+'٪';const bar=document.createElement('span');bar.className='mini-bar';const fill=document.createElement('i');fill.style.width=Math.round(item.score)+'%';bar.append(fill);score.append(value,bar);
-      const choose=document.createElement('button');choose.type='button';choose.className='btn btn-soft btn-small';choose.textContent='افزودن';choose.setAttribute('aria-label','افزودن رقم '+item.digit+' به خروجی');choose.addEventListener('click',()=>appendDigit(item.digit,true));
-      row.append(digit,info,score,choose);holder.append(row);
-    });
-  }
-  function displayDigit(digit){return $('digitMode').value==='fa'?FA_DIGITS[digit]:String(digit);}
-  function convertDigits(text,to){return text.replace(/[0-9۰-۹]/g,ch=>{const n=ch>='۰'&&ch<='۹'?ch.charCodeAt(0)-1776:Number(ch);return to==='fa'?FA_DIGITS[n]:String(n);});}
-  function appendDigit(digit,manual=false){const value=displayDigit(digit);outputEl.value+=value;updateOutputCount();if(manual)showToast('رقم '+value+' به خروجی اضافه شد.');else showToast('رقم '+value+' به خروجی اضافه شد.');}
-  function recognize(){
-    const active=countOn();if(active<2){setStatus('برای تشخیص، دست‌کم دو خانه را روشن کن.','error');showToast('ابتدا یک عدد روی شبکه رسم کن.');return;}
-    const button=$('recognizeBtn');button.disabled=true;setStatus('در حال مقایسه با الگوهای مرجع…','loading');$('resultsEmpty').style.display='none';
-    // اجرای محاسبات در فریم بعدی تا وضعیت پردازش دیده شود.
-    requestAnimationFrame(()=>setTimeout(()=>{
-      try{
-        const result=classify(matrix),top=result[0],second=result[1]||{score:0};const margin=top.score-second.score;
-        const confident=top.score>=58&&margin>=2.2;
-        const confidence=top.score>=76&&margin>=5?'high':confident?'medium':'low';
-        renderCandidates(result,confidence);
-        if(confident){appendDigit(top.digit);setStatus(`تشخیص پیشنهادی: ${DIGIT_NAMES[top.digit]} با شباهت ${Math.round(top.score)}٪. برای ثبت یک رقم دیگر، شبکه را تغییر بده.`,'success');}
-        else{setStatus('تشخیص قطعی نیست؛ پنج گزینه را بررسی کن یا شکل را واضح‌تر رسم کن.','error');}
-      }catch(error){console.error(error);setStatus('در پردازش الگو خطایی رخ داد. دوباره تلاش کن.','error');showToast('خطای غیرمنتظره در تشخیص.');}
-      finally{button.disabled=false;}
-    },40));
-  }
-
-  function updateTrainingCount(){$('sampleCount').textContent=faNum(customSamples.length);}
-  function initDigitSelect(){const select=$('trainingDigit');select.innerHTML='';for(let i=0;i<10;i++){const option=document.createElement('option');option.value=String(i);option.textContent=`${FA_DIGITS[i]}  —  ${DIGIT_NAMES[i]}`;select.append(option);}}
-
-  $('undoBtn').addEventListener('click',()=>{if(!history.length)return;matrix=history.pop();drawGrid();updateUndo();hideResults();setStatus('آخرین تغییر شبکه بازگردانی شد.');});
-  $('clearGridBtn').addEventListener('click',()=>{if(countOn()===0){showToast('شبکه از قبل خالی است.');return;}pushHistory(matrix);matrix=Array.from({length:ROWS},()=>Array(COLS).fill(0));drawGrid();hideResults();setStatus('شبکه پاک شد.');});
-  $('invertBtn').addEventListener('click',()=>{pushHistory(matrix);matrix=matrix.map(row=>row.map(v=>v?0:1));drawGrid();hideResults();setStatus('خانه‌های شبکه معکوس شدند.');});
-  $('recognizeBtn').addEventListener('click',recognize);
-  $('digitMode').addEventListener('change',()=>{outputEl.value=convertDigits(outputEl.value,$('digitMode').value);updateOutputCount();});
-  outputEl.addEventListener('input',updateOutputCount);
-  $('copyBtn').addEventListener('click',async()=>{
-    const text=outputEl.value;if(!text){showToast('متنی برای کپی وجود ندارد.');return;}
-    try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);}else{outputEl.focus();outputEl.select();const ok=document.execCommand('copy');if(!ok)throw new Error('copy failed');}showToast('متن خروجی کپی شد.');}
-    catch(e){outputEl.focus();outputEl.select();showToast('متن انتخاب شد؛ از گزینه کپی مرورگر استفاده کن.');}
-  });
-  $('deleteLastBtn').addEventListener('click',()=>{const chars=[...outputEl.value];let index=-1;for(let i=chars.length-1;i>=0;i--){if(/[0-9۰-۹]/.test(chars[i])){index=i;break;}}if(index<0){showToast('رقمی برای حذف وجود ندارد.');return;}chars.splice(index,1);outputEl.value=chars.join('');updateOutputCount();showToast('آخرین رقم حذف شد.');});
-  $('deleteSelectedBtn').addEventListener('click',()=>{
-    const start=outputEl.selectionStart,end=outputEl.selectionEnd;let a=start,b=end;
-    if(start===end){if(start<outputEl.value.length)b=start+1;else if(start>0)a=start-1;}
-    if(a===b){showToast('رقمی برای حذف پیدا نشد.');return;}
-    outputEl.setRangeText('',a,b,'start');updateOutputCount();outputEl.focus();showToast('بخش انتخاب‌شده حذف شد.');
-  });
-  $('clearOutputBtn').addEventListener('click',()=>{if(!outputEl.value){showToast('خروجی از قبل خالی است.');return;}outputEl.value='';updateOutputCount();showToast('متن خروجی پاک شد.');});
-  $('saveSampleBtn').addEventListener('click',()=>{
-    if(countOn()<2){showToast('ابتدا نمونه عدد را روی شبکه رسم کن.');return;}
-    const digit=Number($('trainingDigit').value),pattern=normalize(matrix);
-    if(pattern.every(v=>v<.05)){showToast('الگوی رسم‌شده معتبر نیست.');return;}
-    customSamples.push({digit,pattern,createdAt:Date.now()});if(customSamples.length>300)customSamples=customSamples.slice(-300);
-    if(saveSamples()){updateTrainingCount();setStatus(`نمونه آموزشی عدد ${DIGIT_NAMES[digit]} ذخیره شد.`,'success');showToast('نمونه آموزشی با موفقیت ذخیره شد.');}
-  });
-  $('clearSamplesBtn').addEventListener('click',()=>{
-    if(!customSamples.length){showToast('نمونه آموزشی ذخیره‌شده‌ای وجود ندارد.');return;}
-    if(!confirm('همه نمونه‌های آموزشی شخصی حذف شوند؟ الگوهای مرجع برنامه باقی می‌مانند.'))return;
-    customSamples=[];saveSamples();updateTrainingCount();setStatus('نمونه‌های آموزشی شخصی حذف شدند.');showToast('نمونه‌های شخصی پاک شدند.');
-  });
-
-  initDigitSelect();drawGrid();updateUndo();updateTrainingCount();updateOutputCount();
-  if(!('PointerEvent' in window))setStatus('برای رسم، خانه‌ها را لمس کن.');
+// ساخت نمونه‌های مرجع از فونت‌های موجود دستگاه؛ بدون تصویر پیکسلی یا اتصال اینترنت
+function buildTemplates(){
+ const families=['Arial','Tahoma','"Segoe UI"','system-ui','sans-serif','serif','monospace'];const weights=[400,700],styles=['normal','italic'],angles=[0,-.055,.055],templates=[];
+ const c=document.createElement('canvas');c.width=112;c.height=112;const g=c.getContext('2d',{willReadFrequently:true});
+ for(const group of GLYPHS){for(let digit=0;digit<10;digit++){const char=group.text[digit],seen=new Set();for(const family of families)for(const weight of weights)for(const style of styles)for(const angle of angles){g.clearRect(0,0,112,112);g.fillStyle='#fff';g.fillRect(0,0,112,112);g.save();g.translate(56,56);g.rotate(angle);g.font=`${style} ${weight} 82px ${family}`;g.textAlign='center';g.textBaseline='middle';g.fillStyle='#101010';g.fillText(char,0,1);g.restore();const img=g.getImageData(0,0,112,112),px=normalizeRaster(img.data,112,112);if(!px)continue;const signature=Array.from(px,v=>Math.round(v*5)).join('');if(seen.has(signature))continue;seen.add(signature);const f=featureFromPixels(px);if(f)templates.push({...f,digit,script:group.script,source:'الگوی مرجع'});}}}
+ return templates;
+}
+function cosineDistance(a,b){let dot=0,aa=0,bb=0;for(let i=0;i<a.length;i++){dot+=a[i]*b[i];aa+=a[i]*a[i];bb+=b[i]*b[i];}if(!aa||!bb)return 1;return Math.max(0,Math.min(1,1-dot/(Math.sqrt(aa*bb))));}
+function chamferDistance(a,b){let ab=0,ba=0,na=0,nb=0;for(let i=0;i<N*N;i++){if(a.mask[i]){ab+=b.dist[i];na++;}if(b.mask[i]){ba+=a.dist[i];nb++;}}if(!na||!nb)return 1;return Math.min(1,(ab/na+ba/nb)/(2*7.5));}
+function similarity(a,b){let pixel=0,den=0;for(let i=0;i<N*N;i++){pixel+=Math.abs(a.pixels[i]-b.pixels[i]);den+=Math.max(a.pixels[i],b.pixels[i]);}pixel=den?pixel/den:1;const chamfer=chamferDistance(a,b),hog=cosineDistance(a.hog,b.hog);let proj=0;for(let i=0;i<a.proj.length;i++)proj+=Math.abs(a.proj[i]-b.proj[i]);proj=Math.min(1,proj/2);return Math.max(0,Math.min(100,100*(1-(.25*pixel+.39*chamfer+.25*hog+.11*proj))));}
+function loadSamples(){try{const raw=JSON.parse(localStorage.getItem(STORE)||'[]');if(!Array.isArray(raw))return[];return raw.filter(s=>Number.isInteger(s.digit)&&s.digit>=0&&s.digit<=9&&Array.isArray(s.pixels)&&s.pixels.length===N*N).slice(-MAX_SAMPLES).map(s=>{const p=Float32Array.from(s.pixels,v=>Math.max(0,Math.min(255,Number(v)||0))/255),f=featureFromPixels(p);return f?{...f,digit:s.digit,script:'دست‌خط شما',source:'نمونه شخصی'}:null;}).filter(Boolean);}catch(_){return[];}}
+function saveSamples(){try{const compact=samples.slice(-MAX_SAMPLES).map(s=>({digit:s.digit,pixels:Array.from(s.pixels,v=>Math.round(v*255))}));localStorage.setItem(STORE,JSON.stringify(compact));return true;}catch(e){toast('فضای ذخیره‌سازی مرورگر کافی نیست.');return false;}}
+function classify(input){if(!templateCache)templateCache=buildTemplates();const best=Array(10).fill(null);const all=templateCache.concat(samples);for(const item of all){let score=similarity(input,item);if(item.source==='نمونه شخصی')score=Math.min(100,score+1.5);const old=best[item.digit];if(!old||score>old.score)best[item.digit]={digit:item.digit,score,source:item.source,script:item.script};}return best.filter(Boolean).sort((a,b)=>b.score-a.score).slice(0,5);}
+function displayDigit(d){return $('digitMode').value==='fa'?FA[d]:String(d);}
+function hideResults(){$('resultFeature').classList.remove('show');$('candidates').innerHTML='';$('resultsEmpty').style.display='block';$('resultsEmpty').textContent='بوم تغییر کرده؛ برای دیدن نتیجه جدید دوباره تشخیص بده.';lastCandidates=[];}
+function renderCandidates(list,level){lastCandidates=list;$('resultsEmpty').style.display='none';const top=list[0];$('featureDigit').textContent=displayDigit(top.digit);$('featureScore').textContent=faNum(Math.round(top.score))+'٪ امتیاز تطبیق';$('featureConfidence').textContent=level==='high'?'اطمینان نسبتاً بالا':level==='medium'?'اطمینان متوسط':'نیازمند انتخاب دستی';$('resultFeature').classList.add('show');const holder=$('candidates');holder.innerHTML='';list.forEach((item,index)=>{const row=document.createElement('div');row.className='candidate'+(index===0?' best':'');const digit=document.createElement('div');digit.className='cand-digit';digit.textContent=displayDigit(item.digit);const info=document.createElement('div');info.className='cand-info';const name=document.createElement('div');name.className='cand-name';name.textContent=DIGIT_NAMES[item.digit]+' · '+item.digit;const src=document.createElement('div');src.className='cand-script';src.textContent=item.source==='نمونه شخصی'?'نمونه دست‌خط شخصی':('الگوی '+item.script);info.append(name,src);const score=document.createElement('div');score.className='score-wrap';const value=document.createElement('span');value.className='score';value.textContent=faNum(Math.round(item.score))+'٪';const bar=document.createElement('span');bar.className='mini-bar';const fill=document.createElement('i');fill.style.width=Math.round(item.score)+'%';bar.append(fill);score.append(value,bar);const add=document.createElement('button');add.type='button';add.className='btn btn-soft btn-small';add.textContent='افزودن';add.addEventListener('click',()=>appendDigit(item.digit));row.append(digit,info,score,add);holder.append(row);});}
+function convertDigits(text,to){return text.replace(/[0-9۰-۹]/g,ch=>{const n=ch>='۰'&&ch<='۹'?ch.charCodeAt(0)-1776:Number(ch);return to==='fa'?FA[n]:String(n);});}
+function updateOutputCount(){const n=[...output.value].filter(c=>/[0-9۰-۹]/.test(c)).length;$('outputCount').textContent=faNum(n)+' رقم';}
+function appendDigit(d){const value=displayDigit(d);output.value+=value;updateOutputCount();toast('رقم '+value+' به خروجی اضافه شد.');}
+function recognize(){if(drawing){status('ابتدا نوشتن را تمام کن.','error');return;}if(!hasInk()){status('ابتدا یک عدد روی بوم بنویس.','error');toast('بوم خالی است.');return;}const button=$('recognizeBtn');button.disabled=true;status('در حال تحلیل شکل، لبه‌ها و الگوهای عددی…','loading');$('resultsEmpty').style.display='none';requestAnimationFrame(()=>setTimeout(()=>{try{currentFeature=captureFeature();if(!currentFeature)throw new Error('empty drawing');const list=classify(currentFeature),top=list[0],second=list[1]||{score:0},margin=top.score-second.score;const confident=top.score>=63&&margin>=3.0,level=top.score>=76&&margin>=5?'high':confident?'medium':'low';renderCandidates(list,level);if(confident){appendDigit(top.digit);status(`تشخیص پیشنهادی: ${DIGIT_NAMES[top.digit]}؛ برای اطمینان، گزینه‌های دیگر را هم بررسی کن.`,'success');}else{status('تشخیص کاملاً مطمئن نیست؛ رقم درست را از گزینه‌ها انتخاب کن.','error');}}catch(err){console.error(err);status('در تحلیل تصویر خطایی رخ داد؛ دوباره تلاش کن.','error');toast('خطای پردازش تصویر.');}finally{button.disabled=false;}},30));}
+$('recognizeBtn').addEventListener('click',recognize);
+function initDigitSelect(){const sel=$('trainingDigit');for(let i=0;i<10;i++){const o=document.createElement('option');o.value=String(i);o.textContent=`${FA[i]} — ${DIGIT_NAMES[i]}`;sel.append(o);}}
+$('saveSampleBtn').addEventListener('click',()=>{if(!hasInk()){toast('ابتدا عدد را روی بوم بنویس.');return;}const f=currentFeature||captureFeature();if(!f){toast('شکل قابل ذخیره‌ای پیدا نشد.');return;}const digit=Number($('trainingDigit').value);samples.push({...f,digit,script:'دست‌خط شما',source:'نمونه شخصی'});if(samples.length>MAX_SAMPLES)samples=samples.slice(-MAX_SAMPLES);if(saveSamples()){$('sampleCount').textContent=faNum(samples.length);status(`نمونه آموزشی عدد ${DIGIT_NAMES[digit]} ذخیره شد.`,'success');toast('نمونه دست‌خط ذخیره شد و در تشخیص‌های بعدی استفاده می‌شود.');}});
+$('clearSamplesBtn').addEventListener('click',()=>{if(!samples.length){toast('نمونه آموزشی ذخیره‌شده‌ای وجود ندارد.');return;}if(!confirm('همه نمونه‌های آموزشی شخصی حذف شوند؟'))return;samples=[];localStorage.removeItem(STORE);$('sampleCount').textContent='۰';status('نمونه‌های آموزشی شخصی حذف شدند.');toast('نمونه‌های شخصی پاک شدند.');});
+$('digitMode').addEventListener('change',()=>{output.value=convertDigits(output.value,$('digitMode').value);if(lastCandidates.length){$('featureDigit').textContent=displayDigit(lastCandidates[0].digit);document.querySelectorAll('.cand-digit').forEach((el,i)=>{if(lastCandidates[i])el.textContent=displayDigit(lastCandidates[i].digit);});}updateOutputCount();});
+output.addEventListener('input',updateOutputCount);
+$('copyBtn').addEventListener('click',async()=>{if(!output.value){toast('متنی برای کپی وجود ندارد.');return;}try{if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(output.value);else{output.focus();output.select();if(!document.execCommand('copy'))throw new Error('copy failed');}toast('متن خروجی کپی شد.');}catch(_){output.focus();output.select();toast('متن انتخاب شد؛ از گزینه کپی مرورگر استفاده کن.');}});
+$('deleteLastBtn').addEventListener('click',()=>{const chars=[...output.value];let i=-1;for(let j=chars.length-1;j>=0;j--)if(/[0-9۰-۹]/.test(chars[j])){i=j;break;}if(i<0){toast('رقمی برای حذف وجود ندارد.');return;}chars.splice(i,1);output.value=chars.join('');updateOutputCount();toast('آخرین رقم حذف شد.');});
+$('deleteSelectedBtn').addEventListener('click',()=>{const start=output.selectionStart,end=output.selectionEnd;let a=start,b=end;if(start===end){if(start<output.value.length)b=start+1;else if(start>0)a=start-1;}if(a===b){toast('بخشی برای حذف پیدا نشد.');return;}output.setRangeText('',a,b,'start');updateOutputCount();output.focus();});
+$('clearOutputBtn').addEventListener('click',()=>{if(!output.value){toast('خروجی از قبل خالی است.');return;}output.value='';updateOutputCount();toast('متن خروجی پاک شد.');});
+initDigitSelect();ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);updateStrokeCount();updateBrushLabel();updateOutputCount();$('sampleCount').textContent=faNum(samples.length);
 })();
 </script>
 </body>
